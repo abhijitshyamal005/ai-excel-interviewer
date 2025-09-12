@@ -39,13 +39,13 @@ export class ComprehensiveReportService implements ReportService {
       const completionRate = evaluations.length > 0 ? 100 : 0;
 
       // Generate detailed feedback
-      const detailedFeedback: DetailedFeedback[] = evaluations.map(eval => ({
-        questionId: eval.questionId,
-        response: eval.candidateResponse,
-        score: eval.score,
-        strengths: this.extractStrengths(eval),
-        improvements: this.extractImprovements(eval),
-        specificFeedback: eval.reasoning || 'No specific feedback available'
+      const detailedFeedback: DetailedFeedback[] = evaluations.map(evaluation => ({
+        questionId: evaluation.questionId,
+        response: evaluation.candidateResponse,
+        score: evaluation.score,
+        strengths: this.extractStrengths(evaluation),
+        improvements: this.extractImprovements(evaluation),
+        specificFeedback: evaluation.reasoning || 'No specific feedback available'
       }));
 
       // Extract skill scores from session
@@ -239,8 +239,8 @@ export class ComprehensiveReportService implements ReportService {
     });
 
     // Analyze evaluation patterns
-    const avgScore = evaluations.reduce((sum, eval) => sum + eval.score, 0) / evaluations.length;
-    const avgConfidence = evaluations.reduce((sum, eval) => sum + eval.confidence, 0) / evaluations.length;
+    const avgScore = evaluations.reduce((sum, evaluation) => sum + evaluation.score, 0) / evaluations.length;
+    const avgConfidence = evaluations.reduce((sum, evaluation) => sum + evaluation.confidence, 0) / evaluations.length;
 
     if (avgConfidence >= 0.8) {
       strengths.push('Consistent and confident responses');

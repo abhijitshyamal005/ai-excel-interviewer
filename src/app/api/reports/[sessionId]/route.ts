@@ -2,15 +2,17 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { ComprehensiveReportService } from '@/services/reports/report-service';
-import { InterviewRepository } from '@/lib/repositories/interview';
+import { InterviewSessionRepository } from '@/lib/repositories/interview';
 import { logger } from '@/lib/logger';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { sessionId: string } }
+  { params }: { params: Promise<{ sessionId: string }> }
 ) {
+  let sessionId: string = '';
   try {
-    const sessionId = params.sessionId;
+    const resolvedParams = await params;
+    sessionId = resolvedParams.sessionId;
 
     if (!sessionId) {
       return NextResponse.json(
@@ -19,7 +21,7 @@ export async function GET(
       );
     }
 
-    const interviewRepo = new InterviewRepository();
+    const interviewRepo = new InterviewSessionRepository();
     const reportService = new ComprehensiveReportService();
 
     // Get interview session
@@ -40,7 +42,7 @@ export async function GET(
     }
 
     // Generate comprehensive report
-    const report = await reportService.generateReport(session);
+    const report = await reportService.generateReport(session as any);
 
     // Get baseline comparison
     const comparison = reportService.compareToBaseline(
@@ -64,7 +66,7 @@ export async function GET(
     });
 
   } catch (error) {
-    logger.error('Failed to generate report', { sessionId: params.sessionId }, error as Error);
+    logger.error('Failed to generate report', { sessionId }, error as Error);
     
     return NextResponse.json(
       { 
@@ -78,10 +80,12 @@ export async function GET(
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { sessionId: string } }
+  { params }: { params: Promise<{ sessionId: string }> }
 ) {
+  let sessionId: string = '';
   try {
-    const sessionId = params.sessionId;
+    const resolvedParams = await params;
+    sessionId = resolvedParams.sessionId;
     const body = await request.json();
     const { format = 'json' } = body;
 
@@ -109,7 +113,7 @@ export async function POST(
 
     logger.info('Report exported via API', { sessionId, format });
 
-    return new NextResponse(exportedReport, {
+    return new NextResponse(exportedReport as BodyInit, {
       headers: {
         'Content-Type': contentType,
         'Content-Disposition': `attachment; filename="${filename}"`,
@@ -117,7 +121,7 @@ export async function POST(
     });
 
   } catch (error) {
-    logger.error('Failed to export report', { sessionId: params.sessionId }, error as Error);
+    logger.error('Failed to export report', { sessionId }, error as Error);
     
     return NextResponse.json(
       { 

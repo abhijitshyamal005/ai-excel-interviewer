@@ -64,8 +64,7 @@ export const excelQuestions: Omit<ExcelQuestion, 'id' | 'usageCount' | 'averageS
         }
       ]
     },
-    tags: ["formulas", "basic", "sum", "ranges"],
-    followUpTriggers: []
+    tags: ["formulas", "basic", "sum", "ranges"]
   },
 
   {
@@ -107,8 +106,7 @@ export const excelQuestions: Omit<ExcelQuestion, 'id' | 'usageCount' | 'averageS
       ],
       partialCreditRules: []
     },
-    tags: ["formulas", "basic", "average", "statistics"],
-    followUpTriggers: []
+    tags: ["formulas", "basic", "average", "statistics"]
   },
 
   // DATA MANIPULATION - Intermediate Level
@@ -172,13 +170,7 @@ export const excelQuestions: Omit<ExcelQuestion, 'id' | 'usageCount' | 'averageS
         }
       ]
     },
-    tags: ["lookup", "vlookup", "data-retrieval", "intermediate"],
-    followUpTriggers: [
-      {
-        trigger: "score < 70",
-        questionTemplate: "What's the difference between VLOOKUP and HLOOKUP?"
-      }
-    ]
+    tags: ["lookup", "vlookup", "data-retrieval", "intermediate"]
   },
 
   // PIVOT TABLES - Intermediate Level
@@ -232,8 +224,7 @@ export const excelQuestions: Omit<ExcelQuestion, 'id' | 'usageCount' | 'averageS
         }
       ]
     },
-    tags: ["pivot-tables", "data-analysis", "aggregation", "intermediate"],
-    followUpTriggers: []
+    tags: ["pivot-tables", "data-analysis", "aggregation", "intermediate"]
   },
 
   // ADVANCED FUNCTIONS - Advanced Level
@@ -287,8 +278,7 @@ export const excelQuestions: Omit<ExcelQuestion, 'id' | 'usageCount' | 'averageS
         }
       ]
     },
-    tags: ["advanced-functions", "countifs", "criteria", "wildcards"],
-    followUpTriggers: []
+    tags: ["advanced-functions", "countifs", "criteria", "wildcards"]
   },
 
   // DATA VISUALIZATION - Intermediate Level
@@ -336,8 +326,7 @@ export const excelQuestions: Omit<ExcelQuestion, 'id' | 'usageCount' | 'averageS
       ],
       partialCreditRules: []
     },
-    tags: ["charts", "visualization", "trends", "time-series"],
-    followUpTriggers: []
+    tags: ["charts", "visualization", "trends", "time-series"]
   },
 
   // MACROS/VBA - Advanced Level
@@ -391,8 +380,7 @@ export const excelQuestions: Omit<ExcelQuestion, 'id' | 'usageCount' | 'averageS
         }
       ]
     },
-    tags: ["macros", "vba", "automation", "advanced"],
-    followUpTriggers: []
+    tags: ["macros", "vba", "automation", "advanced"]
   },
 
   // DATA MODELING - Advanced Level
@@ -440,8 +428,7 @@ export const excelQuestions: Omit<ExcelQuestion, 'id' | 'usageCount' | 'averageS
       ],
       partialCreditRules: []
     },
-    tags: ["financial-modeling", "pmt", "loans", "advanced"],
-    followUpTriggers: []
+    tags: ["financial-modeling", "pmt", "loans", "advanced"]
   }
 ];
 

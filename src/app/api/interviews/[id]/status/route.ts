@@ -1,16 +1,18 @@
 // API Route: Interview Status
 
 import { NextRequest, NextResponse } from 'next/server';
-import { InterviewRepository } from '@/lib/repositories/interview';
+import { InterviewSessionRepository } from '@/lib/repositories/interview';
 import { SessionManager } from '@/lib/redis';
 import { logger } from '@/lib/logger';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  let sessionId: string = '';
   try {
-    const sessionId = params.id;
+    const resolvedParams = await params;
+    sessionId = resolvedParams.id;
 
     if (!sessionId) {
       return NextResponse.json(
@@ -19,7 +21,7 @@ export async function GET(
       );
     }
 
-    const interviewRepo = new InterviewRepository();
+    const interviewRepo = new InterviewSessionRepository();
 
     // Get session from database
     const session = await interviewRepo.findById(sessionId);
@@ -66,7 +68,7 @@ export async function GET(
     });
 
   } catch (error) {
-    logger.error('Failed to get interview status', { sessionId: params.id }, error as Error);
+    logger.error('Failed to get interview status', { sessionId }, error as Error);
     
     return NextResponse.json(
       { 

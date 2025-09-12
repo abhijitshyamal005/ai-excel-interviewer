@@ -63,29 +63,6 @@ npm run dev
 
 Visit [http://localhost:3000](http://localhost:3000) to see the application.
 
-## Project Structure
-
-```
-src/
-├── app/                 # Next.js app directory
-│   ├── api/            # API routes
-│   ├── interview/      # Interview pages
-│   └── admin/          # Admin interface
-├── components/         # React components
-│   ├── interview/      # Interview UI components
-│   ├── admin/          # Admin components
-│   └── common/         # Shared components
-├── services/           # Business logic services
-│   ├── interview/      # Interview orchestration
-│   ├── evaluation/     # AI evaluation engine
-│   ├── questions/      # Question management
-│   └── reports/        # Report generation
-└── lib/               # Utilities and configurations
-    ├── types.ts       # TypeScript definitions
-    ├── db.ts          # Database utilities
-    ├── redis.ts       # Redis/cache utilities
-    └── auth.ts        # Authentication utilities
-```
 
 ## Core Services
 
@@ -155,19 +132,3 @@ Required environment variables for production:
 - `JWT_SECRET` - JWT signing secret
 - `NEXTAUTH_SECRET` - NextAuth secret
 - `NEXTAUTH_URL` - Application URL
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests for new functionality
-5. Submit a pull request
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Support
-
-For support and questions, please open an issue in the GitHub repository.
