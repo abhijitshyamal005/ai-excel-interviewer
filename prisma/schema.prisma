@@ -1,0 +1,118 @@
+// Prisma schema for AI Excel Interviewer
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Candidate {
+  id              String   @id @default(cuid())
+  email           String   @unique
+  name            String
+  targetRole      String?
+  experienceLevel String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  interviewSessions InterviewSession[]
+
+  @@map("candidates")
+}
+
+model InterviewSession {
+  id                    String   @id @default(cuid())
+  candidateId           String
+  roleLevel             String
+  status                String   @default("active")
+  currentQuestionIndex  Int      @default(0)
+  conversationHistory   Json     @default("[]")
+  skillAssessment       Json     @default("{}")
+  startTime             DateTime @default(now())
+  endTime               DateTime?
+  metadata              Json     @default("{}")
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  // Relations
+  candidate         Candidate          @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  evaluationResults EvaluationResult[]
+  analytics         InterviewAnalytics?
+
+  @@map("interview_sessions")
+}
+
+model ExcelQuestion {
+  id               String   @id @default(cuid())
+  category         String
+  difficulty       String
+  text             String
+  expectedAnswers  Json
+  evaluationRubric Json
+  tags             String[] @default([])
+  usageCount       Int      @default(0)
+  averageScore     Decimal? @db.Decimal(5, 2)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  // Relations
+  evaluationResults EvaluationResult[]
+
+  @@map("excel_questions")
+}
+
+model EvaluationResult {
+  id                String   @id @default(cuid())
+  sessionId         String
+  questionId        String
+  candidateResponse String
+  score             Int
+  confidence        Decimal  @db.Decimal(3, 2)
+  reasoning         String?
+  partialCredits    Json     @default("[]")
+  createdAt         DateTime @default(now())
+
+  // Relations
+  session  InterviewSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  question ExcelQuestion    @relation(fields: [questionId], references: [id])
+
+  @@map("evaluation_results")
+}
+
+model InterviewAnalytics {
+  id                           String   @id @default(cuid())
+  sessionId                    String   @unique
+  questionDifficultyProgression Json?
+  responseTimes                Json?
+  engagementMetrics            Json?
+  createdAt                    DateTime @default(now())
+
+  // Relations
+  session InterviewSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@map("interview_analytics")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  role      String   @default("admin")
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+model SystemConfig {
+  id    String @id @default(cuid())
+  key   String @unique
+  value Json
+  
+  @@map("system_config")
+}

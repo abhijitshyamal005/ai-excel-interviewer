@@ -1,36 +1,173 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI-Powered Excel Mock Interviewer
+
+An automated system designed to assess candidates' Microsoft Excel proficiency through structured, conversational interviews. This system addresses hiring pipeline bottlenecks by providing consistent, scalable technical screening for Finance, Operations, and Data Analytics positions.
+
+## Features
+
+- **Structured Interview Flow**: AI-driven conversational interviews with natural progression
+- **Intelligent Evaluation**: Advanced AI assessment of Excel knowledge across skill levels
+- **Real-time Communication**: WebSocket-based interface for seamless interaction
+- **Comprehensive Reporting**: Detailed performance analysis and hiring recommendations
+- **Adaptive Questioning**: Dynamic difficulty adjustment based on candidate performance
+- **Learning System**: Continuous improvement through interview data analysis
+
+## Technology Stack
+
+- **Frontend**: Next.js 15 + React 18 + TypeScript + Tailwind CSS
+- **Backend**: Next.js API Routes + Prisma ORM
+- **Database**: PostgreSQL
+- **Cache/Sessions**: Redis
+- **AI Services**: OpenAI GPT-4 / Google Gemini Pro
+- **Real-time**: Socket.IO
+- **Authentication**: JWT + bcrypt
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
+- Node.js 18+ 
+- PostgreSQL database
+- Redis server
+- OpenAI API key or Google AI API key
+
+### Installation
+
+1. Clone the repository:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <repository-url>
+cd ai-excel-interviewer
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies:
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Set up environment variables:
+```bash
+cp .env.example .env
+# Edit .env with your configuration
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Set up the database:
+```bash
+npm run db:generate
+npm run db:push
+npm run db:seed
+```
 
-## Learn More
+5. Start the development server:
+```bash
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+Visit [http://localhost:3000](http://localhost:3000) to see the application.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+src/
+├── app/                 # Next.js app directory
+│   ├── api/            # API routes
+│   ├── interview/      # Interview pages
+│   └── admin/          # Admin interface
+├── components/         # React components
+│   ├── interview/      # Interview UI components
+│   ├── admin/          # Admin components
+│   └── common/         # Shared components
+├── services/           # Business logic services
+│   ├── interview/      # Interview orchestration
+│   ├── evaluation/     # AI evaluation engine
+│   ├── questions/      # Question management
+│   └── reports/        # Report generation
+└── lib/               # Utilities and configurations
+    ├── types.ts       # TypeScript definitions
+    ├── db.ts          # Database utilities
+    ├── redis.ts       # Redis/cache utilities
+    └── auth.ts        # Authentication utilities
+```
 
-## Deploy on Vercel
+## Core Services
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Interview Orchestrator
+Manages the complete interview lifecycle, conversation flow, and state management.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Evaluation Engine
+AI-powered assessment of candidate responses with partial credit and detailed feedback.
+
+### Question Engine
+Adaptive question selection based on skill level and performance progression.
+
+### Report Service
+Comprehensive performance analysis and hiring recommendation generation.
+
+## API Endpoints
+
+### Authentication
+- `POST /api/auth/login` - Admin login
+- `POST /api/auth/candidate` - Candidate session creation
+
+### Interviews
+- `POST /api/interviews/start` - Start new interview
+- `POST /api/interviews/[id]/response` - Submit response
+- `GET /api/interviews/[id]/status` - Get interview status
+- `POST /api/interviews/[id]/complete` - Complete interview
+
+### Reports
+- `GET /api/reports/[sessionId]` - Get interview report
+- `POST /api/reports/[sessionId]/export` - Export report
+
+## Development
+
+### Running Tests
+```bash
+npm test                # Run tests
+npm run test:watch      # Watch mode
+npm run test:coverage   # Coverage report
+```
+
+### Database Operations
+```bash
+npm run db:studio       # Open Prisma Studio
+npm run db:migrate      # Run migrations
+npm run db:seed         # Seed database
+```
+
+### Code Quality
+```bash
+npm run lint           # ESLint
+npm run type-check     # TypeScript check
+```
+
+## Deployment
+
+The application is designed for deployment on:
+- **Frontend**: Vercel (recommended)
+- **Database**: Railway, Supabase, or AWS RDS
+- **Redis**: Railway, Redis Cloud, or AWS ElastiCache
+
+### Environment Variables
+
+Required environment variables for production:
+- `DATABASE_URL` - PostgreSQL connection string
+- `REDIS_URL` - Redis connection string
+- `OPENAI_API_KEY` - OpenAI API key
+- `JWT_SECRET` - JWT signing secret
+- `NEXTAUTH_SECRET` - NextAuth secret
+- `NEXTAUTH_URL` - Application URL
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests for new functionality
+5. Submit a pull request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Support
+
+For support and questions, please open an issue in the GitHub repository.
