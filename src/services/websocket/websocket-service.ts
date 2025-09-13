@@ -6,6 +6,7 @@ import { SessionManager } from '@/lib/redis';
 import { logger } from '@/lib/logger';
 import { InterviewOrchestrator } from '@/services/interview/interview-orchestrator';
 import { authenticateRequest } from '@/lib/auth';
+import { ExcelLevel } from '@/lib/types';
 
 export interface SocketData {
   sessionId?: string;
@@ -36,7 +37,7 @@ export class WebSocketService {
 
       // Authentication middleware
       socket.use(async (packet, next) => {
-        const [event, data] = packet;
+        const [event] = packet;
         
         if (event === 'authenticate') {
           return next();
@@ -138,7 +139,7 @@ export class WebSocketService {
         try {
           const session = await this.interviewOrchestrator.startInterview(
             data.candidateId, 
-            data.roleLevel as any
+            data.roleLevel as ExcelLevel
           );
 
           socket.join(session.id);
@@ -300,7 +301,7 @@ export class WebSocketService {
     logger.info('WebSocket service initialized');
   }
 
-  private validateCandidateToken(token: string): any {
+  private validateCandidateToken(_token: string): { candidateId: string } | null {
     // Implement candidate token validation
     // This would use the auth utilities
     try {
@@ -311,7 +312,7 @@ export class WebSocketService {
     }
   }
 
-  private validateAdminToken(token: string): any {
+  private validateAdminToken(_token: string): { userId: string } | null {
     // Implement admin token validation
     try {
       // Placeholder implementation

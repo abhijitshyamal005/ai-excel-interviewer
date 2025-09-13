@@ -129,7 +129,7 @@ export class EvaluationRepository extends PaginatedRepository<EvaluationResult> 
         throw new Error('Confidence must be between 0 and 1');
       }
 
-      const updateData: any = {};
+      const updateData: Partial<CreateEvaluationData> = {};
       if (data.score !== undefined) updateData.score = data.score;
       if (data.confidence !== undefined) updateData.confidence = data.confidence;
       if (data.reasoning !== undefined) updateData.reasoning = data.reasoning;

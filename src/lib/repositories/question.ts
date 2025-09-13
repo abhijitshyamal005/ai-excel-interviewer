@@ -2,7 +2,7 @@
 
 import { ExcelQuestion } from '@prisma/client';
 import { BaseRepository, PaginatedRepository, PaginationOptions, PaginatedResult } from './base';
-import { 
+import {
   ExcelQuestion as ExcelQuestionType,
   ExcelSkillCategory,
   DifficultyLevel,
@@ -43,7 +43,7 @@ export class QuestionRepository extends PaginatedRepository<ExcelQuestion> {
   async create(data: CreateQuestionData): Promise<ExcelQuestion> {
     return this.handleError('create question', async () => {
       this.validateRequired(data, ['category', 'difficulty', 'text', 'expectedAnswers', 'evaluationRubric']);
-      
+
       return await this.db.excelQuestion.create({
         data: {
           category: data.category,
@@ -91,14 +91,14 @@ export class QuestionRepository extends PaginatedRepository<ExcelQuestion> {
   async update(id: string, data: UpdateQuestionData): Promise<ExcelQuestion> {
     return this.handleError('update question', async () => {
       this.validateId(id);
-      
+
       const updateData: any = {};
-      
+
       if (data.category) updateData.category = data.category;
       if (data.difficulty) updateData.difficulty = data.difficulty;
       if (data.text) updateData.text = data.text.trim();
-      if (data.expectedAnswers) updateData.expectedAnswers = data.expectedAnswers;
-      if (data.evaluationRubric) updateData.evaluationRubric = data.evaluationRubric;
+      if (data.expectedAnswers) updateData.expectedAnswers = data.expectedAnswers as any;
+      if (data.evaluationRubric) updateData.evaluationRubric = data.evaluationRubric as any;
       if (data.tags) updateData.tags = data.tags;
 
       return await this.db.excelQuestion.update({
@@ -111,7 +111,7 @@ export class QuestionRepository extends PaginatedRepository<ExcelQuestion> {
   async delete(id: string): Promise<void> {
     return this.handleError('delete question', async () => {
       this.validateId(id);
-      
+
       // Check if question has been used in evaluations
       const evaluationCount = await this.db.evaluationResult.count({
         where: { questionId: id }
@@ -136,7 +136,7 @@ export class QuestionRepository extends PaginatedRepository<ExcelQuestion> {
 
       if (filters.category) where.category = filters.category;
       if (filters.difficulty) where.difficulty = filters.difficulty;
-      
+
       if (filters.tags && filters.tags.length > 0) {
         where.tags = { hasSome: filters.tags };
       }
@@ -168,8 +168,8 @@ export class QuestionRepository extends PaginatedRepository<ExcelQuestion> {
             take: 5 // Recent evaluations for preview
           }
         },
-        orderBy: options.sortBy ? 
-          { [options.sortBy]: options.sortOrder || 'desc' } : 
+        orderBy: options.sortBy ?
+          { [options.sortBy]: options.sortOrder || 'desc' } :
           { createdAt: 'desc' }
       });
 
@@ -248,7 +248,7 @@ export class QuestionRepository extends PaginatedRepository<ExcelQuestion> {
   async updateAverageScore(id: string): Promise<void> {
     return this.handleError('update average score', async () => {
       this.validateId(id);
-      
+
       const result = await this.db.evaluationResult.aggregate({
         where: { questionId: id },
         _avg: { score: true },
