@@ -82,7 +82,7 @@ export class CandidateRepository extends PaginatedRepository<Candidate> {
     return this.handleError('update candidate', async () => {
       this.validateId(id);
       
-      const updateData: Partial<CreateCandidateData> = {};
+      const updateData: any = {};
       if (data.name) updateData.name = data.name.trim();
       if (data.targetRole) updateData.targetRole = data.targetRole.trim();
       if (data.experienceLevel) updateData.experienceLevel = data.experienceLevel.trim();

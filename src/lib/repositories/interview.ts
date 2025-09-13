@@ -119,14 +119,14 @@ export class InterviewSessionRepository extends PaginatedRepository<InterviewSes
     return this.handleError('update interview session', async () => {
       this.validateId(id);
       
-      const updateData: Partial<CreateInterviewSessionData & UpdateInterviewSessionData> = {};
+      const updateData: any = {};
       
       if (data.status) updateData.status = data.status;
       if (data.currentQuestionIndex !== undefined) updateData.currentQuestionIndex = data.currentQuestionIndex;
-      if (data.conversationHistory) updateData.conversationHistory = data.conversationHistory;
-      if (data.skillAssessment) updateData.skillAssessment = data.skillAssessment;
+      if (data.conversationHistory) updateData.conversationHistory = data.conversationHistory as any;
+      if (data.skillAssessment) updateData.skillAssessment = data.skillAssessment as any;
       if (data.endTime) updateData.endTime = data.endTime;
-      if (data.metadata) updateData.metadata = data.metadata;
+      if (data.metadata) updateData.metadata = data.metadata as any;
 
       return await this.db.interviewSession.update({
         where: { id },
