@@ -1,6 +1,6 @@
 // Question Engine Service - Adaptive question selection and management
 
-import { QuestionEngine, Question, InterviewSession, SkillCoverage, ExcelLevel } from '@/lib/types';
+import { QuestionEngine, Question, InterviewSession, SkillCoverage, ExcelLevel, ExcelSkillCategory } from '@/lib/types';
 import { QuestionRepository } from '@/lib/repositories/question';
 import { excelQuestions, getQuestionsByCategory, roleQuestionWeights, skillProgression } from '@/data/excel-questions';
 import { logger } from '@/lib/logger';
@@ -188,7 +188,7 @@ export class AdaptiveQuestionEngine implements QuestionEngine {
     // Fallback to static questions
     const staticQuestions = excelQuestions
       .filter(q => q.category === category && q.difficulty === difficulty)
-      .map(q => ({ ...q, id: uuidv4() }));
+      .map(q => this.mapExcelQuestionToQuestion(q));
 
     return staticQuestions.filter(q => !askedQuestionIds.includes(q.id));
   }
@@ -197,7 +197,7 @@ export class AdaptiveQuestionEngine implements QuestionEngine {
     const askedQuestionIds = this.getAskedQuestions(session).map(q => q.id);
     
     // Get any available questions
-    const allQuestions = excelQuestions.map(q => ({ ...q, id: uuidv4() }));
+    const allQuestions = excelQuestions.map(q => this.mapExcelQuestionToQuestion(q));
     return allQuestions.filter(q => !askedQuestionIds.includes(q.id));
   }
 
@@ -250,8 +250,9 @@ export class AdaptiveQuestionEngine implements QuestionEngine {
     return questions.map(() => Math.random() * 100); // Placeholder
   }
 
-  private getExpectedQuestionsForCategory(category: string, roleLevel: ExcelLevel): number {
-    const weight = roleQuestionWeights[roleLevel][category as any] || 0;
+  private getExpectedQuestionsForCategory(category: ExcelSkillCategory, roleLevel: ExcelLevel): number {
+    const weights = roleQuestionWeights[roleLevel];
+    const weight = weights[category] || 0;
     const totalQuestions = 15; // Max questions per interview
     return Math.ceil(totalQuestions * weight);
   }
@@ -264,6 +265,18 @@ export class AdaptiveQuestionEngine implements QuestionEngine {
       text: dbQuestion.text,
       expectedAnswerPatterns: dbQuestion.expectedAnswers.map((a: any) => a.pattern),
       evaluationCriteria: dbQuestion.evaluationRubric,
+      followUpTriggers: []
+    };
+  }
+
+  private mapExcelQuestionToQuestion(excelQuestion: any): Question {
+    return {
+      id: uuidv4(),
+      category: excelQuestion.category,
+      difficulty: excelQuestion.difficulty,
+      text: excelQuestion.text,
+      expectedAnswerPatterns: excelQuestion.expectedAnswers.map((a: any) => a.pattern),
+      evaluationCriteria: excelQuestion.evaluationRubric,
       followUpTriggers: []
     };
   }

@@ -177,7 +177,7 @@ export class WebSocketService {
           // Emit typing indicator
           socket.to(socketData.sessionId).emit('interviewer_typing');
 
-          const result = await this.interviewOrchestrator.processResponse(
+          await this.interviewOrchestrator.submitResponse(
             socketData.sessionId,
             data.response
           );
@@ -185,22 +185,23 @@ export class WebSocketService {
           // Stop typing indicator
           socket.to(socketData.sessionId).emit('interviewer_stopped_typing');
 
-          if (result.nextAction === 'complete') {
-            const report = await this.interviewOrchestrator.endInterview(socketData.sessionId);
-            socket.emit('interview_completed', { report });
+          // Get next question or complete interview
+          const nextQuestion = await this.interviewOrchestrator.getNextQuestion(socketData.sessionId);
+          
+          if (!nextQuestion) {
+            const completedSession = await this.interviewOrchestrator.completeInterview(socketData.sessionId);
+            socket.emit('interview_completed', { report: completedSession });
           } else {
             socket.emit('response_acknowledged', { 
               message: 'Thank you for your response.' 
             });
             
-            if (result.question) {
-              socket.emit('question', result);
-            }
+            socket.emit('question', nextQuestion);
           }
 
           logger.debug('Response processed via WebSocket', { 
             sessionId: socketData.sessionId,
-            nextAction: result.nextAction 
+            hasNextQuestion: !!nextQuestion
           });
 
         } catch (error) {
