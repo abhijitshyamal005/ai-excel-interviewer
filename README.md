@@ -126,9 +126,35 @@ The application is designed for deployment on:
 ### Environment Variables
 
 Required environment variables for production:
-- `DATABASE_URL` - PostgreSQL connection string
-- `REDIS_URL` - Redis connection string
-- `OPENAI_API_KEY` - OpenAI API key
-- `JWT_SECRET` - JWT signing secret
-- `NEXTAUTH_SECRET` - NextAuth secret
-- `NEXTAUTH_URL` - Application URL
+DATABASE_URL – PostgreSQL connection string
+
+REDIS_URL – Redis connection string
+
+OPENAI_API_KEY – OpenAI API key
+
+JWT_SECRET – JWT signing secret
+
+NEXTAUTH_SECRET – NextAuth secret
+
+NEXTAUTH_URL – Application URL
+
+NODE_ENV – Environment mode (production recommended)
+
+PORT – Port number the app runs on
+GOOGLE_AI_API_KEY – Google AI API key (alternative to OpenAI)
+
+SMTP_HOST – SMTP server host for email notifications
+
+SMTP_PORT – SMTP server port
+
+SMTP_USER – SMTP username
+
+SMTP_PASS – SMTP password
+
+AWS_ACCESS_KEY_ID – AWS access key for file storage
+
+AWS_SECRET_ACCESS_KEY – AWS secret key
+
+AWS_REGION – AWS region
+
+AWS_S3_BUCKET – S3 bucket name for storing files
