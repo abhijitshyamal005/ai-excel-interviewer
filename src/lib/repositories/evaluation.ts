@@ -71,7 +71,7 @@ export class EvaluationRepository extends PaginatedRepository<EvaluationResult> 
           score: data.score,
           confidence: data.confidence,
           reasoning: data.reasoning || null,
-          partialCredits: data.partialCredits || []
+          partialCredits: data.partialCredits || [] as any
         }
       });
     });

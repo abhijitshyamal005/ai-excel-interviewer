@@ -125,7 +125,7 @@ export class CandidateRepository extends PaginatedRepository<Candidate> {
         if (filters.createdBefore) where.createdAt.lte = filters.createdBefore;
       }
 
-      const query = this.db.candidate.findMany({
+      const findManyQuery = () => this.db.candidate.findMany({
         where,
         include: {
           interviewSessions: {
@@ -144,7 +144,9 @@ export class CandidateRepository extends PaginatedRepository<Candidate> {
           { createdAt: 'desc' }
       });
 
-      return await this.paginate(query, options);
+      const countQuery = () => this.db.candidate.count({ where });
+
+      return await this.paginate(findManyQuery, countQuery, options);
     });
   }
 

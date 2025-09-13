@@ -149,7 +149,7 @@ export class InterviewSessionRepository extends PaginatedRepository<InterviewSes
       }
 
       const conversationHistory = Array.isArray(session.conversationHistory) 
-        ? session.conversationHistory as ConversationTurn[]
+        ? session.conversationHistory as unknown as ConversationTurn[]
         : [];
       
       conversationHistory.push(turn);
@@ -167,7 +167,7 @@ export class InterviewSessionRepository extends PaginatedRepository<InterviewSes
         throw new Error(`Interview session ${sessionId} not found`);
       }
 
-      const currentScores = (session.skillAssessment as SkillScores) || {
+      const currentScores = (session.skillAssessment as unknown as SkillScores) || {
         overall: 0,
         basicFormulas: 0,
         dataManipulation: 0,
@@ -229,7 +229,7 @@ export class InterviewSessionRepository extends PaginatedRepository<InterviewSes
         if (filters.completedBefore) where.endTime.lte = filters.completedBefore;
       }
 
-      const query = this.db.interviewSession.findMany({
+      const findManyQuery = () => this.db.interviewSession.findMany({
         where,
         include: {
           candidate: {
@@ -252,7 +252,9 @@ export class InterviewSessionRepository extends PaginatedRepository<InterviewSes
           { startTime: 'desc' }
       });
 
-      return await this.paginate(query, options);
+      const countQuery = () => this.db.interviewSession.count({ where });
+
+      return await this.paginate(findManyQuery, countQuery, options);
     });
   }
 

@@ -132,7 +132,7 @@ export class AdaptiveQuestionEngine implements QuestionEngine {
     
     // Prioritize categories with low coverage and high importance
     const categoryScores = Object.entries(roleWeights).map(([category, weight]) => {
-      const currentCoverage = coverage.categories[category as any] || 0;
+      const currentCoverage = (coverage.categories as any)[category] || 0;
       const priority = weight * (1 - currentCoverage);
       return { category, priority };
     });

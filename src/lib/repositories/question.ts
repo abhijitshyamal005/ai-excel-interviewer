@@ -49,8 +49,8 @@ export class QuestionRepository extends PaginatedRepository<ExcelQuestion> {
           category: data.category,
           difficulty: data.difficulty,
           text: data.text.trim(),
-          expectedAnswers: data.expectedAnswers,
-          evaluationRubric: data.evaluationRubric,
+          expectedAnswers: data.expectedAnswers as any,
+          evaluationRubric: data.evaluationRubric as any,
           tags: data.tags || [],
           usageCount: 0,
           averageScore: null
@@ -157,7 +157,7 @@ export class QuestionRepository extends PaginatedRepository<ExcelQuestion> {
         if (filters.maxAverageScore !== undefined) where.averageScore.lte = filters.maxAverageScore;
       }
 
-      const query = this.db.excelQuestion.findMany({
+      const findManyQuery = () => this.db.excelQuestion.findMany({
         where,
         include: {
           evaluationResults: {
@@ -173,7 +173,9 @@ export class QuestionRepository extends PaginatedRepository<ExcelQuestion> {
           { createdAt: 'desc' }
       });
 
-      return await this.paginate(query, options);
+      const countQuery = () => this.db.excelQuestion.count({ where });
+
+      return await this.paginate(findManyQuery, countQuery, options);
     });
   }
 
@@ -268,8 +270,8 @@ export class QuestionRepository extends PaginatedRepository<ExcelQuestion> {
     total: number;
     byCategory: Record<string, number>;
     byDifficulty: Record<string, number>;
-    mostUsed: ExcelQuestion[];
-    leastUsed: ExcelQuestion[];
+    mostUsed: any[];
+    leastUsed: any[];
     averageUsage: number;
   }> {
     return this.handleError('get question stats', async () => {
